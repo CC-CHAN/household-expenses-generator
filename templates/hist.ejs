@@ -1,0 +1,47 @@
+<div>
+  <ul class="nav nav-tabs">
+    <li class="nav-item">
+      <a class="nav-link" href="/">抽獎</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link active disabled" aria-current="page" href="/hist"
+        >記錄</a
+      >
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="/rule">玩法說明</a>
+    </li>
+  </ul>
+</div>
+
+<div>
+  <table class="table table-sm table-striped">
+    <thead>
+      <tr>
+        <th scope="col">日期</th>
+        <th scope="col">幸運分數</th>
+        <th scope="col">金額</th>
+        <th scope="col">已支付</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% for (let i = 0; i < records.length; i++) { const r = records[i]; const
+      next = records[i+1]; const div = next != null && (r.date.substring(0, 4)
+      !== next.date.substring(0, 4)); %>
+      <tr>
+        <% if (div === true) { %>
+        <td class="border-bottom border-primary"><%= r.date %></td>
+        <td class="border-bottom border-primary"><%= r.score %></td>
+        <td class="border-bottom border-primary"><%= r.total %></td>
+        <td class="border-bottom border-primary"><%= r.isPaid %></td>
+        <% } else { %>
+        <td><%= r.date %></td>
+        <td><%= r.score %></td>
+        <td><%= r.total %></td>
+        <td><%= r.isPaid %></td>
+        <% } %>
+      </tr>
+      <% } %>
+    </tbody>
+  </table>
+</div>

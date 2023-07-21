@@ -1,0 +1,16 @@
+{
+    "server": {
+        "port": 8888,
+        "templatePath": "../templates",
+        "histPath": "../draw.json"
+    },
+    "model": {
+        "base": 200,
+        "monthlySalary": 5000,
+        "basePercentage": 0.022,
+        "minRandomSmall": 0.01,
+        "maxRandomSmall": 19.99,
+        "minWeight": 0.01,
+        "maxWeight": 0.99
+    }
+}
