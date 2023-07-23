@@ -24,6 +24,7 @@ const getHtml = (name: string, params = {}): string => {
   const inner = ejs.render(TEMPLATE_MAP[name], params);
   const container = ejs.render(TEMPLATE_MAP["container"], {
     container: inner,
+    appName: config.appName,
   });
   return container;
 };

@@ -4,6 +4,7 @@ import fs from "fs";
 const CONFIG_PATH = path.join(__dirname, "../config.json");
 
 type Config = {
+  appName: string;
   server: {
     port: number;
     histPath: string;

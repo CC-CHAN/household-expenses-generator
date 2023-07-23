@@ -1,4 +1,5 @@
 {
+    "appName": "🎰家用生成器🎰",
     "server": {
         "port": 8888,
         "templatePath": "../templates",
