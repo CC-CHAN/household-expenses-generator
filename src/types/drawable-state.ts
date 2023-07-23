@@ -1,12 +1,13 @@
 import DrawHist from "./draw-hist";
+import DrawState from "./draw-state";
 
 type DrawableState =
   | {
-      isDrawable: true;
+      drawState: DrawState.DRAWABLE;
       lastDraw: DrawHist | undefined;
     }
   | {
-      isDrawable: false;
+      drawState: DrawState.PAID | DrawState.PENDING;
       lastDraw: DrawHist;
     };
 export default DrawableState;
