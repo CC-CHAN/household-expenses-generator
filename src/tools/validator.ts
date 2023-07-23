@@ -1,15 +1,6 @@
-import { DrawHist, getLast } from "@/tools/hist-manager";
+import { getLast } from "@/tools/hist-manager";
 import { getMonthFirstDay, formatDate } from "@/tools/date";
-
-type DrawableState =
-  | {
-      isDrawable: true;
-      lastDraw: DrawHist | undefined;
-    }
-  | {
-      isDrawable: false;
-      lastDraw: DrawHist;
-    };
+import DrawableState from "@/types/drawable-state";
 
 const isDrawableNow = async (): Promise<DrawableState> => {
   const lastDraw = await getLast();

@@ -1,21 +1,7 @@
 import _ from "lodash";
 import { promises as fs } from "fs";
 import config from "@/config";
-
-type DrawHist = {
-  date: string;
-  total: string;
-  score: string;
-  isPaid: boolean;
-  updatedDt: Date;
-  detail: {
-    raw: { base: number; monthlySalary: number; basePercentage: number };
-    randomSmall: number;
-    pay: number;
-    bonus: number;
-    weight: number;
-  };
-};
+import DrawHist from "@/types/draw-hist";
 
 const readAll = async (): Promise<DrawHist[]> => {
   let data: DrawHist[] = [];
@@ -51,4 +37,4 @@ const upsert = async (draw: DrawHist): Promise<void> => {
   await fs.writeFile(config.server.histPath, JSON.stringify(draws));
 };
 
-export { readAll, getLast, upsert, DrawHist };
+export { readAll, getLast, upsert };

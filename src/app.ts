@@ -6,10 +6,13 @@ import fastify from "fastify";
 import _ from "lodash";
 import ejs from "ejs";
 import config from "@/config";
-import { DrawHist, readAll, upsert } from "@/tools/hist-manager";
-import { DrawResult, draw } from "@/tools/draw";
+import { readAll, upsert } from "@/tools/hist-manager";
+import { draw } from "@/tools/draw";
 import { isDrawableNow } from "@/tools/validator";
-import { formatDate, getNextMonthFirstDay } from "./tools/date";
+import { formatDate, getNextMonthFirstDay } from "@/tools/date";
+import DrawResult from "@/types/draw-result";
+import DrawHist from "@/types/draw-hist";
+import DrawState from "@/types/draw-state";
 
 const server = fastify({
   logger: true,
@@ -25,7 +28,6 @@ const getHtml = (name: string, params = {}): string => {
   return container;
 };
 
-// state: drawable, pending, paid
 server.get("/play", async (req, res) => {
   const isDrawable = await isDrawableNow();
   return { isDrawable };
@@ -36,20 +38,20 @@ server.get("/", async (req, res) => {
   const { isDrawable, lastDraw } = await isDrawableNow();
   const params: Record<string, string> = {};
   if (isDrawable) {
-    params.state = "drawable";
+    params.state = DrawState.DRAWABLE;
     return res.type("text/html").send(getHtml("draw", params));
   }
   const { isPaid, score, total } = lastDraw;
   params.score = score;
   params.total = total;
   if (isPaid) {
-    params.state = "paid";
+    params.state = DrawState.PAID;
     params.nextDraw = formatDate(
       getNextMonthFirstDay(new Date()),
       "yyyy-MM-dd"
     );
   } else {
-    params.state = "pending";
+    params.state = DrawState.PENDING;
   }
   return res.type("text/html").send(getHtml("draw", params));
 });

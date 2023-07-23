@@ -1,5 +1,6 @@
 import _ from "lodash";
 import config from "@/config";
+import DrawResult from "@/types/draw-result";
 
 const getLuckPercentage = (weight: number): number => {
   const onePercentRange = weight / 100;
@@ -20,19 +21,6 @@ const addBonus = (weight: number) => {
   // const factor = (0.01 / (1 - threshold)) * 100;
   // return BASE * factor * (weight - threshold);
   return config.model.base * weight;
-};
-
-type DrawResult = {
-  total: number;
-  randomSmall: number;
-  pay: number;
-  bonus: number;
-  weight: number;
-  raw: {
-    base: number;
-    monthlySalary: number;
-    basePercentage: number;
-  };
 };
 
 const draw = (
@@ -60,4 +48,4 @@ const draw = (
   };
 };
 
-export { draw, DrawResult };
+export { draw };
