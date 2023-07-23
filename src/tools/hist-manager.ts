@@ -22,7 +22,7 @@ const getLast = async (): Promise<DrawHist | undefined> => {
   return draw;
 };
 
-const upsert = async (draw: DrawHist): Promise<void> => {
+const upsert = async (draw: DrawHist): Promise<number> => {
   let matched = false;
   const draws = await readAll();
   _.forEach(draws, (x) => {
@@ -34,7 +34,13 @@ const upsert = async (draw: DrawHist): Promise<void> => {
   if (!matched) {
     draws.push(draw);
   }
-  await fs.writeFile(config.server.histPath, JSON.stringify(draws));
+
+  try {
+    await fs.writeFile(config.server.histPath, JSON.stringify(draws));
+    return 1;
+  } catch (e) {
+    return 0;
+  }
 };
 
 export { readAll, getLast, upsert };

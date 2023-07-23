@@ -2,7 +2,7 @@ import moduleAlias from "module-alias";
 moduleAlias.addAlias("@", __dirname.replace("src", "dist"));
 //
 import init from "@/init";
-import fastify from "fastify";
+import Fastify from "fastify";
 import _ from "lodash";
 import ejs from "ejs";
 import config from "@/config";
@@ -14,7 +14,7 @@ import DrawResult from "@/types/draw-result";
 import DrawHist from "@/types/draw-hist";
 import DrawState from "@/types/draw-state";
 
-const server = fastify({
+const server = Fastify({
   logger: true,
 });
 
@@ -70,7 +70,10 @@ server.get("/draw", async (req, res) => {
   }
   const now = new Date();
   const result = resultToDraw(draw(), now);
-  await upsert(result);
+  const affected = await upsert(result);
+  if (affected !== 1) {
+    throw Error("Failed to update draw result");
+  }
   return res.redirect("/");
 });
 
@@ -99,6 +102,24 @@ server.get("/admin/static", async (req, res) => {
     draw(config.model.maxWeight, config.model.maxRandomSmall),
   ];
   return { min, max };
+});
+
+server.get("/admin/toPaid", async (req, res) => {
+  const { drawState, lastDraw } = await isDrawableNow();
+  if (drawState !== DrawState.PENDING) {
+    throw Error("Incorrect state to pay");
+  }
+  const affected = await upsert({ ...lastDraw, isPaid: true });
+  return res.redirect("/");
+});
+
+server.setErrorHandler((err, req, res) => {
+  server.log.error(err);
+  return res.type("text/html").send(getHtml("error", { errorCode: 500 }));
+});
+
+server.setNotFoundHandler((req, res) => {
+  return res.type("text/html").send(getHtml("error", { errorCode: 404 }));
 });
 
 // Run the server!
