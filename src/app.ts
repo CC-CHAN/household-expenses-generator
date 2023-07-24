@@ -19,9 +19,13 @@ const server = Fastify({
 });
 
 let TEMPLATE_MAP: Record<string, string> = {};
+let COMPONENT_MAP: Record<string, string> = {};
 
 const getHtml = (name: string, params = {}): string => {
-  const inner = ejs.render(TEMPLATE_MAP[name], params);
+  const inner = ejs.render(TEMPLATE_MAP[name], {
+    ...params,
+    ...COMPONENT_MAP,
+  });
   const container = ejs.render(TEMPLATE_MAP["container"], {
     container: inner,
     appName: config.appName,
@@ -126,7 +130,9 @@ server.setNotFoundHandler((req, res) => {
 // Run the server!
 const start = async () => {
   try {
-    TEMPLATE_MAP = await init(server.log);
+    const { componentMap, templateMap } = await init(server.log);
+    COMPONENT_MAP = componentMap;
+    TEMPLATE_MAP = templateMap;
     await server.listen({ port: config.server.port });
   } catch (err) {
     server.log.error(err);

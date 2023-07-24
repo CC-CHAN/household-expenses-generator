@@ -4,22 +4,35 @@ import { FastifyBaseLogger } from "fastify";
 import config from "@/config";
 
 const init = async (log: FastifyBaseLogger) => {
-  const initTemplates = async () => {
-    const templateMap: Record<string, string> = {};
+  const initTemplates = async (initPath: string) => {
+    const files = await fs.readdir(initPath, {
+      withFileTypes: true,
+    });
 
-    const files = await fs.readdir(config.server.templatePath);
+    const map: Record<string, string> = {};
+
     for (const f of files) {
-      const fileName = f.substring(0, f.indexOf("."));
-      const filePath = path.join(config.server.templatePath, f);
+      if (f.isDirectory()) {
+        continue;
+      }
+      const filePath = path.join(initPath, f.name);
+      const fileName = `${f.name.substring(0, f.name.lastIndexOf("."))}`;
       log.info(`load template ${fileName} from ${filePath}`);
-      templateMap[fileName] = await fs.readFile(filePath, {
+      map[fileName] = await fs.readFile(filePath, {
         encoding: "utf-8",
       });
     }
-    return templateMap;
+    return map;
   };
 
-  return initTemplates();
+  const templateMap: Record<string, string> = await initTemplates(
+    config.server.templatePath
+  );
+  const componentMap: Record<string, string> = await initTemplates(
+    path.join(config.server.templatePath, "components")
+  );
+
+  return { templateMap, componentMap };
 };
 
 export default init;
