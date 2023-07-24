@@ -101,12 +101,23 @@ server.get("/rule", async (req, res) => {
   return res.type("text/html").send(html);
 });
 
-server.get("/admin/static", async (req, res) => {
-  const [min, max] = [
-    draw(config.model.minWeight, config.model.minRandomSmall),
-    draw(config.model.maxWeight, config.model.maxRandomSmall),
-  ];
-  return { min, max };
+server.get("/admin/benchmark/:times", async (req, res) => {
+  const times = (req.params as any).times ?? 100;
+
+  const totals = [];
+  for (let i = 0; i < times; i++) {
+    const { total, weight } = draw();
+    totals.push(total);
+  }
+  const mean = _.mean(totals);
+  return {
+    min: draw(config.model.minWeight, config.model.minRandomSmall),
+    max: draw(config.model.maxWeight, config.model.maxRandomSmall),
+    mean: mean,
+    median: totals.sort()[totals.length / 2],
+    yearly: mean * 12,
+    totalDraw: times,
+  };
 });
 
 server.get("/admin/toPaid", async (req, res) => {

@@ -18,10 +18,11 @@ const addBonus = (weight: number) => {
     return 0;
   }
 
-  // const factor = (0.01 / (1 - threshold)) * 100;
-  // return BASE * factor * (weight - threshold);
-  return config.model.base * weight;
+  return config.model.base * norm(weight, threshold, config.model.maxWeight);
 };
+
+const norm = (value: number, min: number, max: number): number =>
+  (value - min) / (max - min);
 
 const draw = (
   weight: number = _.random(config.model.minWeight, config.model.maxWeight),
