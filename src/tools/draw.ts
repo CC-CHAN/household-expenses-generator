@@ -12,7 +12,7 @@ const getPayByLuck = (percentage: number): number => {
 };
 
 const addBonus = (weight: number) => {
-  const threshold = 0.8;
+  const threshold = config.model.bonusThreshold;
 
   if (weight <= threshold) {
     return 0;

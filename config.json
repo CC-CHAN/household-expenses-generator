@@ -12,6 +12,7 @@
         "minRandomSmall": 0.01,
         "maxRandomSmall": 20.00,
         "minWeight": 0.01,
-        "maxWeight": 1.00
+        "maxWeight": 1.00,
+        "bonusThreshold": 0.8
     }
 }

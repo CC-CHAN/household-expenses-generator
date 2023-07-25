@@ -18,6 +18,7 @@ type Config = {
     maxRandomSmall: number;
     minWeight: number;
     maxWeight: number;
+    bonusThreshold: number;
   };
 };
 const config: Config = JSON.parse(
