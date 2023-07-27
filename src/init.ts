@@ -7,6 +7,8 @@ import SMTPTransport from "nodemailer/lib/smtp-transport";
 
 let TEMPLATE_MAP: Record<string, string>;
 let COMPONENT_MAP: Record<string, string>;
+let EMAIL_MAP: Record<string, string>;
+
 let MAILER: Transporter<SMTPTransport.SentMessageInfo> | undefined;
 
 const init = async (log: FastifyBaseLogger) => {
@@ -46,8 +48,11 @@ const init = async (log: FastifyBaseLogger) => {
   COMPONENT_MAP = await initTemplates(
     path.join(config.server.templatePath, "components")
   );
+  EMAIL_MAP = await initTemplates(
+    path.join(config.server.templatePath, "emails")
+  );
   MAILER = await initMailer();
 };
 
 export default init;
-export { MAILER, TEMPLATE_MAP, COMPONENT_MAP };
+export { MAILER, TEMPLATE_MAP, COMPONENT_MAP, EMAIL_MAP };
