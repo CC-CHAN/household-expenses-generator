@@ -14,5 +14,17 @@
         "minWeight": 0.01,
         "maxWeight": 1.00,
         "bonusThreshold": 0.8
+    },
+    "notification": {
+        "enableMailer": true,
+        "mailerConfig": {
+            "service": "hotmail",
+            "auth": {
+                "user": "hello@world.com",
+                "pass": "foobar"
+            }
+        },
+        "toEmail": "foo@bar.com",
+        "bccEmail": "hello@world.com"
     }
 }

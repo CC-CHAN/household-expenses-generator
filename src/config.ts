@@ -20,6 +20,12 @@ type Config = {
     maxWeight: number;
     bonusThreshold: number;
   };
+  notification: {
+    enableMailer: boolean;
+    mailerConfig: any;
+    toEmail: string;
+    bccEmail: string | undefined;
+  };
 };
 const config: Config = JSON.parse(
   fs.readFileSync(CONFIG_PATH, { encoding: "utf-8" })
