@@ -1,7 +1,7 @@
 import moduleAlias from "module-alias";
 moduleAlias.addAlias("@", __dirname.replace("src", "dist"));
 //
-import init, { TEMPLATE_MAP, COMPONENT_MAP } from "@/init";
+import init, { TEMPLATE_MAP, COMPONENT_MAP, EMAIL_MAP } from "@/init";
 import Fastify from "fastify";
 import _ from "lodash";
 import ejs from "ejs";
@@ -13,7 +13,7 @@ import { formatDate, getNextMonthFirstDay } from "@/tools/date";
 import DrawResult from "@/types/draw-result";
 import DrawHist from "@/types/draw-hist";
 import DrawState from "@/types/draw-state";
-import { verify, sendMail } from "@/tools/mailer";
+import { sendMail } from "@/tools/mailer";
 
 const server = Fastify({
   logger: true,
@@ -29,6 +29,10 @@ const getHtml = (name: string, params = {}): string => {
     appName: config.appName,
   });
   return container;
+};
+
+const getEmailHtml = (name: string, params = {}): string => {
+  return ejs.render(EMAIL_MAP[name], params);
 };
 
 const resultToDraw = (result: DrawResult, dt: Date): DrawHist => {
@@ -77,6 +81,20 @@ server.get("/draw", async (req, res) => {
   if (affected !== 1) {
     throw Error("Failed to update draw result");
   }
+  if (config.notification.enableMailer === true) {
+    const emailRes = await sendMail(
+      config.notification.toEmail,
+      `[${config.appName}] 已完成每月抽獎 (${result.date})`,
+      getEmailHtml("new", {
+        appName: config.appName,
+        date: result.date,
+        score: result.score,
+        total: result.total,
+      }),
+      config.notification.bccEmail
+    );
+    server.log.info(emailRes);
+  }
   return res.redirect("/");
 });
 
@@ -124,6 +142,23 @@ server.get("/admin/toPaid", async (req, res) => {
     throw Error("Incorrect state to pay");
   }
   const affected = await upsert({ ...lastDraw, isPaid: true });
+  if (affected !== 1) {
+    throw Error("Failed to update draw result");
+  }
+  if (config.notification.enableMailer === true) {
+    const emailRes = await sendMail(
+      config.notification.toEmail,
+      `[${config.appName}] 每月抽獎已經存入 (${lastDraw.date})`,
+      getEmailHtml("deposit", {
+        appName: config.appName,
+        nextDraw: formatDate(getNextMonthFirstDay(new Date()), "yyyy-MM-dd"),
+        date: lastDraw.date,
+        total: lastDraw.total,
+      }),
+      config.notification.bccEmail
+    );
+    server.log.info(emailRes);
+  }
   return res.redirect("/");
 });
 
