@@ -8,7 +8,7 @@ import ejs from "ejs";
 import config from "@/config";
 import { readAll, upsert } from "@/tools/hist-manager";
 import { draw } from "@/tools/draw";
-import { isDrawableNow } from "@/tools/validator";
+import { findFirstPayable, isDrawableNow } from "@/tools/validator";
 import { formatDate, getNextMonthFirstDay } from "@/tools/date";
 import DrawResult from "@/types/draw-result";
 import DrawHist from "@/types/draw-hist";
@@ -137,23 +137,23 @@ server.get("/admin/benchmark/:times", async (req, res) => {
 });
 
 server.get("/admin/toPaid", async (req, res) => {
-  const { drawState, lastDraw } = await isDrawableNow();
-  if (drawState !== DrawState.PENDING) {
+  const payableDraw = await findFirstPayable();
+  if (!payableDraw) {
     throw Error("Incorrect state to pay");
   }
-  const affected = await upsert({ ...lastDraw, isPaid: true });
+  const affected = await upsert({ ...payableDraw, isPaid: true });
   if (affected !== 1) {
     throw Error("Failed to update draw result");
   }
   if (config.notification.enableMailer === true) {
     const emailRes = await sendMail(
       config.notification.toEmail,
-      `[${config.appName}] 每月抽獎已經存入 (${lastDraw.date})`,
+      `[${config.appName}] 每月抽獎已經存入 (${payableDraw.date})`,
       getEmailHtml("deposit", {
         appName: config.appName,
         nextDraw: formatDate(getNextMonthFirstDay(new Date()), "yyyy-MM-dd"),
-        date: lastDraw.date,
-        total: lastDraw.total,
+        date: payableDraw.date,
+        total: payableDraw.total,
       }),
       config.notification.bccEmail
     );
