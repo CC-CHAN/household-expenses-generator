@@ -29,13 +29,15 @@
     "ejs": "^3.1.9",
     "fastify": "^4.20.0",
     "lodash": "^4.17.21",
-    "module-alias": "^2.2.3"
+    "module-alias": "^2.2.3",
+    "nodemailer": "^6.9.4"
   },
   "devDependencies": {
     "@types/ejs": "^3.1.2",
     "@types/lodash": "^4.14.195",
     "@types/module-alias": "^2.0.1",
     "@types/node": "^20.4.2",
+    "@types/nodemailer": "^6.4.9",
     "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-prettier": "^5.0.0",
     "prettier": "3.0.0",

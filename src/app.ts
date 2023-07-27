@@ -1,7 +1,7 @@
 import moduleAlias from "module-alias";
 moduleAlias.addAlias("@", __dirname.replace("src", "dist"));
 //
-import init from "@/init";
+import init, { TEMPLATE_MAP, COMPONENT_MAP } from "@/init";
 import Fastify from "fastify";
 import _ from "lodash";
 import ejs from "ejs";
@@ -13,13 +13,11 @@ import { formatDate, getNextMonthFirstDay } from "@/tools/date";
 import DrawResult from "@/types/draw-result";
 import DrawHist from "@/types/draw-hist";
 import DrawState from "@/types/draw-state";
+import { verify, sendMail } from "@/tools/mailer";
 
 const server = Fastify({
   logger: true,
 });
-
-let TEMPLATE_MAP: Record<string, string> = {};
-let COMPONENT_MAP: Record<string, string> = {};
 
 const getHtml = (name: string, params = {}): string => {
   const inner = ejs.render(TEMPLATE_MAP[name], {
@@ -141,9 +139,7 @@ server.setNotFoundHandler((req, res) => {
 // Run the server!
 const start = async () => {
   try {
-    const { componentMap, templateMap } = await init(server.log);
-    COMPONENT_MAP = componentMap;
-    TEMPLATE_MAP = templateMap;
+    await init(server.log);
     await server.listen({ port: config.server.port });
   } catch (err) {
     server.log.error(err);
