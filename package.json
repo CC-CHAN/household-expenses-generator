@@ -1,0 +1,46 @@
+{
+  "name": "household-expenses-generator",
+  "version": "1.0.0",
+  "description": "Draw household expenses every month by luck",
+  "main": "index.js",
+  "lint-staged": {
+    "*.ts": [
+      "eslint --fix",
+      "prettier --write"
+    ]
+  },
+  "scripts": {
+    "build": "tsc --p tsconfig.prod.json",
+    "start": "rm -rf dist;npm run build;node dist/app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/CC-CHAN/household-expenses-generator"
+  },
+  "keywords": [
+    "generator",
+    "household expenses",
+    "家用"
+  ],
+  "author": "CC-CHAN",
+  "license": "ISC",
+  "dependencies": {
+    "date-fns": "^2.30.0",
+    "ejs": "^3.1.9",
+    "fastify": "^4.20.0",
+    "lodash": "^4.17.21",
+    "module-alias": "^2.2.3",
+    "nodemailer": "^6.9.4"
+  },
+  "devDependencies": {
+    "@types/ejs": "^3.1.2",
+    "@types/lodash": "^4.14.195",
+    "@types/module-alias": "^2.0.1",
+    "@types/node": "^20.4.2",
+    "@types/nodemailer": "^6.4.9",
+    "eslint-config-prettier": "^8.8.0",
+    "eslint-plugin-prettier": "^5.0.0",
+    "prettier": "3.0.0",
+    "typescript": "^5.1.6"
+  }
+}

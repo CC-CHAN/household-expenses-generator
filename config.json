@@ -1,0 +1,30 @@
+{
+    "appName": "🎰家用生成器🎰",
+    "server": {
+        "port": 8888,
+        "templatePath": "../templates",
+        "histPath": "../draw.json"
+    },
+    "model": {
+        "base": 200,
+        "monthlySalary": 5000,
+        "basePercentage": 0.022,
+        "minRandomSmall": 0.01,
+        "maxRandomSmall": 20.00,
+        "minWeight": 0.01,
+        "maxWeight": 1.00,
+        "bonusThreshold": 0.8
+    },
+    "notification": {
+        "enableMailer": true,
+        "mailerConfig": {
+            "service": "hotmail",
+            "auth": {
+                "user": "hello@world.com",
+                "pass": "foobar"
+            }
+        },
+        "toEmail": "foo@bar.com",
+        "bccEmail": "hello@world.com"
+    }
+}
