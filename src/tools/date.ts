@@ -16,9 +16,4 @@ const getNextMonthFirstDay = (date: Date): Date => {
   return addMonths(getMonthFirstDay(date), 1);
 };
 
-export {
-  formatDate,
-  getMonthFirstDay,
-  getNextMonthFirstDay,
-  yyyyMMddFormatter,
-};
+export { formatDate, getMonthFirstDay, getNextMonthFirstDay };
