@@ -37,7 +37,7 @@ const getEmailHtml = (name: string, params = {}): string => {
 
 const resultToDraw = (result: DrawResult, dt: Date): DrawHist => {
   return {
-    date: formatDate(dt),
+    date: formatDate(dt, false),
     total: result.total.toFixed(2),
     score: "" + Math.floor(result.weight * 100),
     isPaid: false,
@@ -60,10 +60,7 @@ server.get("/", async (req, res) => {
     params.score = score;
     params.total = total;
     if (drawState === DrawState.PAID) {
-      params.nextDraw = formatDate(
-        getNextMonthFirstDay(new Date()),
-        "yyyy-MM-dd"
-      );
+      params.nextDraw = formatDate(getNextMonthFirstDay(new Date()), true);
     }
   }
   params.state = drawState;
@@ -151,7 +148,7 @@ server.get("/admin/toPaid", async (req, res) => {
       `[${config.appName}] 每月抽獎已經存入 (${payableDraw.date})`,
       getEmailHtml("deposit", {
         appName: config.appName,
-        nextDraw: formatDate(getNextMonthFirstDay(new Date()), "yyyy-MM-dd"),
+        nextDraw: formatDate(getNextMonthFirstDay(new Date()), true),
         date: payableDraw.date,
         total: payableDraw.total,
       }),

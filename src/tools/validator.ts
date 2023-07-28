@@ -15,7 +15,7 @@ const isDrawableNow = async (): Promise<DrawableState> => {
     return { drawState: DrawState.DRAWABLE, lastDraw: undefined };
   }
   const monthFirstDay = getMonthFirstDay(new Date());
-  const isDrawable = lastDraw.date !== formatDate(monthFirstDay);
+  const isDrawable = lastDraw.date !== formatDate(monthFirstDay, false);
   return {
     drawState: isDrawable ? DrawState.DRAWABLE : getDrawStateByHist(lastDraw),
     lastDraw,
