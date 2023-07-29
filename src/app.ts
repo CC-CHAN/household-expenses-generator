@@ -110,7 +110,9 @@ server.get("/hist", async (req, res) => {
 });
 
 server.get("/rule", async (req, res) => {
-  const html = getHtml("rule");
+  const min = draw(config.model.minWeight, config.model.minRandomSmall).total;
+  const max = draw(config.model.maxWeight, config.model.maxRandomSmall).total;
+  const html = getHtml("rule", { min, max });
   return res.type("text/html").send(html);
 });
 
