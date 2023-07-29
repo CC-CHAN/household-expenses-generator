@@ -22,17 +22,18 @@ const getLast = async (): Promise<DrawHist | undefined> => {
   return draw;
 };
 
-const upsert = async (draw: DrawHist): Promise<number> => {
+const upsert = async (draw: Omit<DrawHist, "updatedDt">): Promise<number> => {
   let matched = false;
   const draws = await readAll();
+  const upsertedDraw: DrawHist = { ...draw, updatedDt: new Date() };
   _.forEach(draws, (x) => {
     if (x.date === draw.date) {
-      x = _.merge(x, draw);
+      x = _.merge(x, upsertedDraw);
       matched = true;
     }
   });
   if (!matched) {
-    draws.push(draw);
+    draws.push(upsertedDraw);
   }
 
   try {

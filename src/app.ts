@@ -35,13 +35,15 @@ const getEmailHtml = (name: string, params = {}): string => {
   return ejs.render(EMAIL_MAP[name], params);
 };
 
-const resultToDraw = (result: DrawResult, dt: Date): DrawHist => {
+const resultToDraw = (
+  result: DrawResult,
+  dt: Date
+): Omit<DrawHist, "updatedDt"> => {
   return {
     date: formatDate(dt, false),
     total: result.total.toFixed(2),
     score: "" + Math.floor(result.weight * 100),
     isPaid: false,
-    updatedDt: new Date(),
     detail: {
       raw: result.raw,
       randomSmall: result.randomSmall,
