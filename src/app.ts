@@ -95,7 +95,6 @@ server.get("/draw", async (req, res) => {
   return res.redirect("/");
 });
 
-// static pages
 server.get("/hist", async (req, res) => {
   const records = await readAll();
   const map_records = _.map(records, (x) => {
@@ -116,6 +115,7 @@ server.get("/rule", async (req, res) => {
   return res.type("text/html").send(html);
 });
 
+// admin pages
 server.get("/admin/benchmark/:times", async (req, res) => {
   const times = (req.params as any).times ?? 100;
 
@@ -135,7 +135,18 @@ server.get("/admin/benchmark/:times", async (req, res) => {
   };
 });
 
-server.get("/admin/toPaid", async (req, res) => {
+server.get("/admin/pay", async (req, res) => {
+  const payableDraw = await findFirstPayable();
+  const params: Record<string, string> = { state: DrawState.PAID };
+  if (payableDraw && payableDraw.isPaid === false) {
+    params.total = payableDraw.total;
+    params.date = payableDraw.date;
+    params.state = DrawState.PENDING;
+  }
+  return res.type("text/html").send(getHtml("pay", params));
+});
+
+server.get("/admin/paid", async (req, res) => {
   const payableDraw = await findFirstPayable();
   if (!payableDraw) {
     throw Error("Incorrect state to pay");
