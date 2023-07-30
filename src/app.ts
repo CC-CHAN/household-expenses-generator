@@ -187,7 +187,7 @@ server.setNotFoundHandler((req, res) => {
 const start = async () => {
   try {
     await init(server.log);
-    await server.listen({ port: config.server.port });
+    await server.listen({ port: config.server.port, host: "0.0.0.0" });
   } catch (err) {
     server.log.error(err);
     process.exit(1);
