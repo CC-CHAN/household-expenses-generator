@@ -37,18 +37,37 @@
 </button>
 
 <script>
-  const btnColorDark = document.getElementById("btnColorDark");
-  const btnColorLight = document.getElementById("btnColorLight");
+  const LIGHT = "light";
+  const DARK = "dark";
+
+  const toLight = () => {
+    document.documentElement.setAttribute("data-bs-theme", LIGHT);
+    document.getElementById("btnColorLight").style.display = "block";
+    document.getElementById("btnColorDark").style.display = "none";
+  };
+  const toDark = () => {
+    document.documentElement.setAttribute("data-bs-theme", DARK);
+    document.getElementById("btnColorDark").style.display = "block";
+    document.getElementById("btnColorLight").style.display = "none";
+  };
+
+  const setColor = (color) => (document.cookie = `color=${color}; path=/`);
+  const getColor = () => {
+    try {
+      return document.cookie.split(";")[0].split("=")[1];
+    } catch (e) {}
+    return DARK;
+  };
+
+  getColor() == DARK ? toDark() : toLight();
 
   document.getElementById("btnColorSwitch").addEventListener("click", () => {
-    if (document.documentElement.getAttribute("data-bs-theme") == "dark") {
-      document.documentElement.setAttribute("data-bs-theme", "light");
-      btnColorLight.style.display = "block";
-      btnColorDark.style.display = "none";
+    if (document.documentElement.getAttribute("data-bs-theme") == DARK) {
+      toLight();
+      setColor(LIGHT);
     } else {
-      document.documentElement.setAttribute("data-bs-theme", "dark");
-      btnColorDark.style.display = "block";
-      btnColorLight.style.display = "none";
+      toDark();
+      setColor(DARK);
     }
   });
 </script>

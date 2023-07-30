@@ -8,7 +8,7 @@ import ejs from "ejs";
 import config from "@/config";
 import { readAll, upsert } from "@/tools/hist-manager";
 import { draw } from "@/tools/draw";
-import { isDrawableNow } from "@/tools/validator";
+import { findFirstPayable, isDrawableNow } from "@/tools/validator";
 import { formatDate, getNextMonthFirstDay } from "@/tools/date";
 import DrawResult from "@/types/draw-result";
 import DrawHist from "@/types/draw-hist";
@@ -35,13 +35,15 @@ const getEmailHtml = (name: string, params = {}): string => {
   return ejs.render(EMAIL_MAP[name], params);
 };
 
-const resultToDraw = (result: DrawResult, dt: Date): DrawHist => {
+const resultToDraw = (
+  result: DrawResult,
+  dt: Date
+): Omit<DrawHist, "updatedDt"> => {
   return {
-    date: formatDate(dt),
+    date: formatDate(dt, false),
     total: result.total.toFixed(2),
     score: "" + Math.floor(result.weight * 100),
     isPaid: false,
-    updatedDt: new Date(),
     detail: {
       raw: result.raw,
       randomSmall: result.randomSmall,
@@ -60,10 +62,7 @@ server.get("/", async (req, res) => {
     params.score = score;
     params.total = total;
     if (drawState === DrawState.PAID) {
-      params.nextDraw = formatDate(
-        getNextMonthFirstDay(new Date()),
-        "yyyy-MM-dd"
-      );
+      params.nextDraw = formatDate(getNextMonthFirstDay(new Date()), true);
     }
   }
   params.state = drawState;
@@ -98,7 +97,6 @@ server.get("/draw", async (req, res) => {
   return res.redirect("/");
 });
 
-// static pages
 server.get("/hist", async (req, res) => {
   const records = await readAll();
   const map_records = _.map(records, (x) => {
@@ -113,10 +111,13 @@ server.get("/hist", async (req, res) => {
 });
 
 server.get("/rule", async (req, res) => {
-  const html = getHtml("rule");
+  const min = draw(config.model.minWeight, config.model.minRandomSmall).total;
+  const max = draw(config.model.maxWeight, config.model.maxRandomSmall).total;
+  const html = getHtml("rule", { min, max });
   return res.type("text/html").send(html);
 });
 
+// admin pages
 server.get("/admin/benchmark/:times", async (req, res) => {
   const times = (req.params as any).times ?? 100;
 
@@ -136,24 +137,35 @@ server.get("/admin/benchmark/:times", async (req, res) => {
   };
 });
 
-server.get("/admin/toPaid", async (req, res) => {
-  const { drawState, lastDraw } = await isDrawableNow();
-  if (drawState !== DrawState.PENDING) {
+server.get("/admin/pay", async (req, res) => {
+  const payableDraw = await findFirstPayable();
+  const params: Record<string, string> = { state: DrawState.PAID };
+  if (payableDraw && payableDraw.isPaid === false) {
+    params.total = payableDraw.total;
+    params.date = payableDraw.date;
+    params.state = DrawState.PENDING;
+  }
+  return res.type("text/html").send(getHtml("pay", params));
+});
+
+server.get("/admin/paid", async (req, res) => {
+  const payableDraw = await findFirstPayable();
+  if (!payableDraw) {
     throw Error("Incorrect state to pay");
   }
-  const affected = await upsert({ ...lastDraw, isPaid: true });
+  const affected = await upsert({ ...payableDraw, isPaid: true });
   if (affected !== 1) {
     throw Error("Failed to update draw result");
   }
   if (config.notification.enableMailer === true) {
     const emailRes = await sendMail(
       config.notification.toEmail,
-      `[${config.appName}] 每月抽獎已經存入 (${lastDraw.date})`,
+      `[${config.appName}] 每月抽獎已經存入 (${payableDraw.date})`,
       getEmailHtml("deposit", {
         appName: config.appName,
-        nextDraw: formatDate(getNextMonthFirstDay(new Date()), "yyyy-MM-dd"),
-        date: lastDraw.date,
-        total: lastDraw.total,
+        nextDraw: formatDate(getNextMonthFirstDay(new Date()), true),
+        date: payableDraw.date,
+        total: payableDraw.total,
       }),
       config.notification.bccEmail
     );

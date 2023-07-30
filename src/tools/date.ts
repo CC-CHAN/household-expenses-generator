@@ -1,6 +1,10 @@
 import { addMonths, startOfMonth, format as formatter } from "date-fns";
 
-const formatDate = (date: Date, format = "yyyy-MM"): string => {
+const yyyyMMFormatter = "yyyy年MM月";
+const yyyyMMddFormatter = "yyyy年MM月dd日";
+
+const formatDate = (date: Date, withDay: boolean): string => {
+  const format = withDay ? yyyyMMddFormatter : yyyyMMFormatter;
   return formatter(date, format);
 };
 
