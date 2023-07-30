@@ -1,7 +1,10 @@
 import path from "path";
 import fs from "fs";
 
-const CONFIG_PATH = path.join(__dirname, "../config.json");
+const CONFIG_PATH = path.join(
+  __dirname,
+  process.env.CONFIG_PATH ?? "../default.json"
+);
 
 type Config = {
   appName: string;

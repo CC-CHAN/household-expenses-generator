@@ -11,7 +11,7 @@
   },
   "scripts": {
     "build": "tsc --p tsconfig.prod.json",
-    "start": "rm -rf dist;npm run build;node dist/app.js"
+    "start": "rm -rf dist;npm run build;CONFIG_PATH=../configs/default.json node dist/app.js"
   },
   "repository": {
     "type": "git",

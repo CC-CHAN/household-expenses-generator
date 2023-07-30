@@ -3,7 +3,7 @@
     "server": {
         "port": 8888,
         "templatePath": "../templates",
-        "histPath": "../draw.json"
+        "histPath": "../data/draw.json"
     },
     "model": {
         "base": 200,
