@@ -73,7 +73,7 @@ server.get("/", async (req, res) => {
 server.get("/draw", async (req, res) => {
   const isDrawable = await isDrawableNow();
   if (!isDrawable) {
-    return res.redirect("/");
+    return res.redirect(`${config.server.urlPrefix}/`);
   }
   const now = new Date();
   const result = resultToDraw(draw(), now);
@@ -95,7 +95,7 @@ server.get("/draw", async (req, res) => {
     );
     server.log.info(emailRes);
   }
-  return res.redirect("/");
+  return res.redirect(`${config.server.urlPrefix}/`);
 });
 
 server.get("/hist", async (req, res) => {
@@ -172,7 +172,7 @@ server.get("/admin/paid", async (req, res) => {
     );
     server.log.info(emailRes);
   }
-  return res.redirect("/");
+  return res.redirect(`${config.server.urlPrefix}/`);
 });
 
 server.setErrorHandler((err, req, res) => {
