@@ -2,6 +2,7 @@
     "appName": "🎰家用生成器🎰",
     "server": {
         "port": 8888,
+        "urlPrefix":"/heg",
         "templatePath": "../templates",
         "histPath": "../data/draw.json"
     },

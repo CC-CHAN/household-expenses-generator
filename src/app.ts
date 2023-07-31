@@ -23,6 +23,7 @@ const getHtml = (name: string, params = {}): string => {
   const inner = ejs.render(TEMPLATE_MAP[name], {
     ...params,
     ...COMPONENT_MAP,
+    urlPrefix: config.server.urlPrefix,
   });
   const container = ejs.render(TEMPLATE_MAP["container"], {
     container: inner,

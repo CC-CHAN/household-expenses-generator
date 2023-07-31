@@ -10,6 +10,7 @@ type Config = {
   appName: string;
   server: {
     port: number;
+    urlPrefix: string;
     histPath: string;
     templatePath: string;
   };
@@ -35,5 +36,6 @@ const config: Config = JSON.parse(
 );
 config.server.histPath = path.join(__dirname, config.server.histPath);
 config.server.templatePath = path.join(__dirname, config.server.templatePath);
+config.server.urlPrefix = config.server.urlPrefix ?? "";
 
 export default config;

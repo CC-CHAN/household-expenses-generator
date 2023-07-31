@@ -2,13 +2,16 @@
   <div class="d-flex me-auto">
     <ul class="nav nav-tabs">
       <li class="nav-item">
-        <a class="nav-link" href="./">抽獎</a>
+        <a class="nav-link" href="<%= urlPrefix %>/">抽獎</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="./hist">記錄</a>
+        <a class="nav-link" href="<%= urlPrefix %>/hist">記錄</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link active disabled" aria-current="page" href="./rule"
+        <a
+          class="nav-link active disabled"
+          aria-current="page"
+          href="<%= urlPrefix %>/rule"
           >玩法說明</a
         >
       </li>
@@ -20,7 +23,7 @@
 <div>
   <ol class="list-group list-group-flush">
     <li class="list-group-item">
-      - 每月1號至月尾，可於<a href="./"><b>抽獎頁面</b></a
+      - 每月1號至月尾，可於<a href="<%= urlPrefix %>/"><b>抽獎頁面</b></a
       >進行當月抽獎<b>1</b>次。
     </li>
     <li class="list-group-item">
@@ -31,7 +34,7 @@
       <i><%= max.toFixed(2) %></i> 。
     </li>
     <li class="list-group-item">
-      - 在於<a href="./hist"><b>記錄頁面</b></a
+      - 在於<a href="<%= urlPrefix %>/hist"><b>記錄頁面</b></a
       >可瀏覽過去抽獎結果。
     </li>
   </ol>
